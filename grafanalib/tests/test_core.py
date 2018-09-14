@@ -97,6 +97,20 @@ def test_custom_template_dont_override_options():
     assert t.to_json_data()['current']['value'] == '1'
 
 
+def test_table_styled_columns():
+    t = G.Table.with_styled_columns(
+        columns=[
+            (G.Column('Foo', 'foo'), G.ColumnStyle()),
+            (G.Column('Bar', 'bar'), None),
+        ],
+        type='custom',
+    )
+
+    assert len(t.to_json_data()['options']) == 3
+    assert t.to_json_data()['current']['text'] == 'some text 1'
+    assert t.to_json_data()['current']['value'] == '1'
+
+
 def test_table():
     t = G.Table(
         dataSource='some data source',
