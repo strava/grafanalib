@@ -154,6 +154,7 @@ CUBIC_METER_FORMAT = 'm3'
 LITRE_FORMAT = 'litre'
 PERCENT_FORMAT = 'percent'
 VOLT_AMPERE_FORMAT = 'voltamp'
+PACKETS_PER_SEC_FORMAT = "pps"
 
 # Alert rule state
 STATE_NO_DATA = 'no_data'
