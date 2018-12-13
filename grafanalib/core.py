@@ -326,8 +326,8 @@ class CloudWatchTarget(object):
     region = attr.ib(default="")
     namespace = attr.ib(default="")
     metricName = attr.ib(default="")
-    statistics = attr.ib(default=attr.Factory(list)),
-    dimensions = attr.ib(default=attr.Factory(dict)),
+    statistics = attr.ib(default=attr.Factory(list))
+    dimensions = attr.ib(default=attr.Factory(dict))
     id = attr.ib(default="")
     expression = attr.ib(default="")
     period = attr.ib(default="")
