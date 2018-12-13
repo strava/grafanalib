@@ -336,10 +336,10 @@ class CloudWatchTarget(object):
 
     refId = attr.ib(default="")
     datasource = attr.ib(default="")
-    hide = attr.ib(default=False)
+    hide = attr.ib(default=False, validator=instance_of(bool))
 
     def to_json_data(self):
-        return {
+        d = {
             'region': self.region,
             'namespace': self.namespace,
             'metricName': self.metricName,
@@ -354,6 +354,8 @@ class CloudWatchTarget(object):
             'datasource': self.datasource,
             'hide': self.hide,
         }
+        print(d)
+        return d
 
 
 @attr.s
