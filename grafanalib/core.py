@@ -638,6 +638,39 @@ class SqlTarget(Target):
         super_json["rawQuery"] = self.rawQuery
         return super_json
 
+class CloudWatchTarget(object):
+    region = attr.ib(default="")
+    namespace = attr.ib(default="")
+    metricName = attr.ib(default="")
+    statistics = attr.ib(default=attr.Factory(list))
+    dimensions = attr.ib(default=attr.Factory(dict))
+    id = attr.ib(default="")
+    expression = attr.ib(default="")
+    period = attr.ib(default="")
+    alias = attr.ib(default="")
+    highResolution = attr.ib(default=False, validator=instance_of(bool))
+
+    refId = attr.ib(default="")
+    datasource = attr.ib(default="")
+    hide = attr.ib(default=False, validator=instance_of(bool))
+
+    def to_json_data(self):
+        return {
+            'region': self.region,
+            'namespace': self.namespace,
+            'metricName': self.metricName,
+            'statistics': self.statistics,
+            'dimensions': self.dimensions,
+            'id': self.id,
+            'expression': self.expression,
+            'period': self.period,
+            'alias': self.alias,
+            'highResolution': self.highResolution,
+            'refId': self.refId,
+            'datasource': self.datasource,
+            'hide': self.hide,
+        }
+
 
 @attr.s
 class Tooltip(object):

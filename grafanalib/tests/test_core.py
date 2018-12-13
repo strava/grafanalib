@@ -1,6 +1,7 @@
 """Tests for core."""
 
 import random
+
 import grafanalib.core as G
 import pytest
 
@@ -1190,3 +1191,59 @@ def test_sql_target_with_source_files():
     assert t.to_json_data()["targets"][0].rawQuery is True
     assert t.to_json_data()["targets"][0].rawSql == "SELECT example\nFROM test\nWHERE example='example' AND example_date BETWEEN '1970-01-01' AND '1971-01-01';\n"
     print(t.to_json_data()["targets"][0])
+
+
+CW_TESTDATA = [
+    pytest.param(
+        {},
+        {'region': '',
+         'namespace': '',
+         'metricName': '',
+         'statistics': [],
+         'dimensions': {},
+         'id': '',
+         'expression': '',
+         'period': '',
+         'alias': '',
+         'highResolution': False,
+         'refId': '',
+         'datasource': '',
+         'hide': False},
+        id='defaults',
+    ),
+    pytest.param(
+        {'region': 'us-east-1',
+         'namespace': 'AWS/RDS',
+         'metricName': 'CPUUtilization',
+         'statistics': ['Average'],
+         'dimensions': {'DBInstanceIdentifier': 'foo'},
+         'id': 'id',
+         'expression': 'expr',
+         'period': 'period',
+         'alias': 'alias',
+         'highResolution': True,
+         'refId': 'A',
+         'datasource': 'CloudWatch',
+         'hide': True,
+        },
+        {'region': 'us-east-1',
+         'namespace': 'AWS/RDS',
+         'metricName': 'CPUUtilization',
+         'statistics': ['Average'],
+         'dimensions': {'DBInstanceIdentifier': 'foo'},
+         'id': 'id',
+         'expression': 'expr',
+         'period': 'period',
+         'alias': 'alias',
+         'highResolution': True,
+         'refId': 'A',
+         'datasource': 'CloudWatch',
+         'hide': True,
+        },
+        id='custom',
+    )
+]
+
+@pytest.mark.parametrize("attrs,expected", CW_TESTDATA)
+def test_cloud_watch_target_json_data(attrs, expected):
+    assert G.CloudWatchTarget(**attrs).to_json_data() == expected
