@@ -100,6 +100,7 @@ NEWS_TYPE = 'news'
 HISTOGRAM_TYPE = 'histogram'
 AE3E_PLOTLY_TYPE = 'ae3e-plotly-panel'
 BAR_CHART_TYPE = 'barchart'
+AJAX_TYPE = 'ryantxu-ajax-panel'
 
 DEFAULT_FILL = 1
 DEFAULT_REFRESH = '10s'
@@ -2470,6 +2471,55 @@ class RangeMap(object):
             'text': self.text,
         }
 
+@attr.s
+class AjaxPanel(object):
+    """Generates the Ajax Plugin Panel."""
+    method = attr.ib()
+    params_js = attr.ib()
+    title = attr.ib()
+    url = attr.ib()
+    datasource = attr.ib(default=None)
+    header_js = attr.ib(default="{}")
+    id = attr.ib(default=None)
+    minSpan = attr.ib(default=None)
+    mode = attr.ib(default=TEXT_MODE_HTML)
+    responseType = attr.ib(default=TEXT_MODE_TEXT)
+    skipSameURL = attr.ib(default=True, validator=instance_of(bool))
+    showTime = attr.ib(default=False, validator=instance_of(bool))
+    showTimeFormat = attr.ib(default="LTS")
+    showTimePrefix = attr.ib(default=None)
+    showTimeValue = attr.ib(default="request")
+    span = attr.ib(default=None)
+    targets = attr.ib(default=[{}])
+    templateResponse = attr.ib(default=True, validator=instance_of(bool))
+    transparent = attr.ib(default=False, validator=instance_of(bool))
+    type = attr.ib(default=AJAX_TYPE)
+    withCredentials = attr.ib(default=False, validator=instance_of(bool))
+
+    def to_json_data(self):
+        return {
+           'method': self.method,
+           'params_js': self.params_js,
+           'title': self.title,
+           'url': self.url,
+           'datasource': self.datasource,
+           'header_js': self.header_js,
+           'id': self.id,
+           'minSpan': self.minSpan,
+           'mode': self.mode,
+           'responseType': self.responseType,
+           'skipSameURL': self.skipSameURL,
+           'showTime': self.showTime,
+           'showTimeFormat': self.showTimeFormat,
+           'showTimePrefix': self.showTimePrefix,
+           'showTimeValue': self.showTimeValue,
+           'span': self.span,
+           'targets': self.targets,
+           'templateResponse': self.templateResponse,
+           'transparent': self.transparent,
+           'type': self.type,
+           'withCredentials': self.withCredentials
+        }
 
 @attr.s
 class DiscreteColorMappingItem(object):
