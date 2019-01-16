@@ -335,7 +335,7 @@ class CloudWatchTarget(object):
     highResolution = attr.ib(default=False, validator=instance_of(bool))
 
     refId = attr.ib(default="")
-    datasource = attr.ib(default="")
+    dataSource = attr.ib(default="")
     hide = attr.ib(default=False, validator=instance_of(bool))
 
     def to_json_data(self):
