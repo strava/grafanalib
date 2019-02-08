@@ -302,6 +302,18 @@ Changes
 -------
 
 * Minor markup tweaks to the README
+0.5.4 (2019-02-08)
+==================
+
+Fixes
+-----
+* Added more base units
+
+
+New features
+------------
+* Added an AJAX panel plugin object
+
 
 0.5.2 (2018-07-19)
 ==================
