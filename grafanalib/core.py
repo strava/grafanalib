@@ -849,6 +849,41 @@ class GridPos(object):
             'y': self.y
         }
 
+@attr.s
+class Row(object):
+    # TODO: jml would like to separate the balancing behaviour from this
+    # layer.
+    panels = attr.ib(default=attr.Factory(list), convert=_balance_panels)
+    collapse = attr.ib(
+        default=False, validator=instance_of(bool),
+    )
+    editable = attr.ib(
+        default=True, validator=instance_of(bool),
+    )
+    height = attr.ib(
+        default=attr.Factory(lambda: DEFAULT_ROW_HEIGHT),
+        validator=instance_of(Pixels),
+    )
+    showTitle = attr.ib(default=None)
+    title = attr.ib(default="")
+    repeat = attr.ib(default=None)
+
+    def _iter_panels(self):
+        return iter(self.panels)
+
+    h = attr.ib()
+    w = attr.ib()
+    x = attr.ib()
+    y = attr.ib()
+
+    def to_json_data(self):
+        return {
+            'h': self.h,
+            'w': self.w,
+            'x': self.x,
+            'y': self.y
+        }
+
 
 @attr.s
 class Annotations(object):
