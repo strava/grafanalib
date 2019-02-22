@@ -25,10 +25,10 @@ def test_serialization():
             ),
         ],
         id=1,
-        yAxes=[
+        yAxes=G.YAxes(
             G.YAxis(format=G.SHORT_FORMAT, label="CPU seconds / second"),
             G.YAxis(format=G.SHORT_FORMAT),
-        ],
+        ),
     )
     stream = StringIO()
     _gen.write_dashboard(graph, stream)
@@ -56,10 +56,10 @@ def test_auto_id():
                             hide=True
                         ),
                     ],
-                    yAxes=[
+                    yAxes=G.YAxes(
                         G.YAxis(format=G.SHORT_FORMAT, label="CPU seconds"),
                         G.YAxis(format=G.SHORT_FORMAT),
-                    ],
+                    ),
                 )
             ]),
         ],
@@ -91,10 +91,10 @@ def test_auto_refids():
                             expr='another target'
                         ),
                     ],
-                    yAxes=[
+                    yAxes=G.YAxes(
                         G.YAxis(format=G.SHORT_FORMAT, label="CPU seconds"),
                         G.YAxis(format=G.SHORT_FORMAT),
-                    ],
+                    ),
                 ).auto_ref_ids()
             ]),
         ],
