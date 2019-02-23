@@ -2,12 +2,20 @@
 Changelog
 =========
 
-0.5.6 (2019-02-22)
+0.5.7 (2019-02-22)
 ==================
 
 New features
 -----
 * Added support for Interval Variable Type in Template Class
+
+
+0.5.6 (2019-02-21)
+==================
+
+Fixes
+-----
+* Set row.title to "" instead of None to get row behavior.
 
 
 0.5.5 (2019-02-13)
