@@ -2,6 +2,14 @@
 Changelog
 =========
 
+0.5.6 (2019-02-22)
+==================
+
+New features
+-----
+* Added support for Interval Variable Type in Template Class
+
+
 0.5.5 (2019-02-13)
 ==================
 
