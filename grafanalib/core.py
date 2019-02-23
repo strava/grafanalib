@@ -725,6 +725,11 @@ class Template(object):
     type = attr.ib(default='query')
     hide = attr.ib(default=SHOW)
 
+    # Interval Variables Specific 
+    auto = attr.ib(default=None)
+    auto_count = attr.ib(default=None)
+    auto_min = attr.ib(default=None)
+
     def __attrs_post_init__(self):
         if self.type == 'custom':
             if len(self.options) == 0:
@@ -769,6 +774,9 @@ class Template(object):
             'useTags': self.useTags,
             'tagsQuery': self.tagsQuery,
             'tagValuesQuery': self.tagValuesQuery,
+            'auto': self.auto,
+            'auto_count': self.auto_count,
+            'auto_min': self.auto_min,
         }
 
 
