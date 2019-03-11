@@ -1962,6 +1962,7 @@ class Panel(object):
     targets = attr.ib(default=attr.Factory(list), validator=instance_of(list))
     title = attr.ib(default="")
     cacheTimeout = attr.ib(default=None)
+    decimals = attr.ib(default=1)
     description = attr.ib(default=None)
     editable = attr.ib(default=True, validator=instance_of(bool))
     error = attr.ib(default=False, validator=instance_of(bool))
@@ -1990,6 +1991,7 @@ class Panel(object):
         res = {
             'cacheTimeout': self.cacheTimeout,
             'datasource': self.dataSource,
+            'decimals': self.decimals,
             'description': self.description,
             'editable': self.editable,
             'error': self.error,
