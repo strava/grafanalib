@@ -4644,6 +4644,7 @@ class Annotation(object):
         :param name: the variable's name
         :param expr: the query users to fetch the valid values of the variable
         :param step: the time window size to use when querying for annotation data
+        :param textFormat: text to display when hovering over annotation
         :param refresh: Controls when to update values in the dropdown
         :param allValue: specify a custom all value with regex,
             globs or lucene syntax.
@@ -4686,6 +4687,7 @@ class Annotation(object):
     step = attr.ib(default=None)
     tagsQuery = attr.ib(default=None)
     tagValuesQuery = attr.ib(default=None)
+    textFormat = attr.ib(default=None)
     type = attr.ib(default='query')
     useTags = attr.ib(
         default=False,
@@ -4735,6 +4737,7 @@ class Annotation(object):
             'regex': self.regex,
             'sort': 1,
             'step': self.step,
+            'textFormat': self.textFormat,
             'type': self.type,
             'useTags': self.useTags,
             'tagsQuery': self.tagsQuery,
