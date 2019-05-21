@@ -302,6 +302,15 @@ Changes
 -------
 
 * Minor markup tweaks to the README
+0.5.9 (2019-05-12)
+==================
+
+Fixes
+-----
+
+* Change Tooltip valueType default from CUMULATIVE to INDIVIDUAL for stacked graphs.
+
+
 0.5.8 (2019-04-09)
 ==================
 
