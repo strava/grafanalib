@@ -303,6 +303,7 @@ Changes
 
 * Minor markup tweaks to the README
 0.5.9 (2019-05-12)
+0.5.9 (2019-05-21)
 ==================
 
 Fixes
