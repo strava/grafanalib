@@ -853,7 +853,7 @@ class GridPos(object):
 class Row(object):
     # TODO: jml would like to separate the balancing behaviour from this
     # layer.
-    panels = attr.ib(default=attr.Factory(list), convert=_balance_panels)
+    panels = attr.ib(default=attr.Factory(list), converter=_balance_panels)
     collapse = attr.ib(
         default=False, validator=instance_of(bool),
     )
@@ -865,7 +865,7 @@ class Row(object):
         validator=instance_of(Pixels),
     )
     showTitle = attr.ib(default=None)
-    title = attr.ib(default="")
+    title = attr.ib(default=None)
     repeat = attr.ib(default=None)
 
     def _iter_panels(self):
@@ -1983,6 +1983,14 @@ class Panel(object):
     transparent = attr.ib(default=False, validator=instance_of(bool))
     transformations = attr.ib(default=attr.Factory(list), validator=instance_of(list))
     extraJson = attr.ib(default=None, validator=attr.validators.optional(instance_of(dict)))
+    xAxis = attr.ib(default=attr.Factory(XAxis), validator=instance_of(XAxis))
+    # XXX: This isn't a *good* default, rather it's the default Grafana uses.
+    yAxes = attr.ib(
+        default=attr.Factory(YAxes),
+        converter=to_y_axes,
+        validator=instance_of(YAxes),
+    )
+    alert = attr.ib(default=None)
 
     def _map_panels(self, f):
         return f(self)
