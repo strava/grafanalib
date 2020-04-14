@@ -303,6 +303,11 @@ Changes
 
 * Minor markup tweaks to the README
 0.5.9 (2019-05-12)
+0.5.10 (2020-04-14)
+===================
+
+* Set default refresh to 1m instead of 10s to reduce load on metric sources.
+
 0.5.9 (2019-05-21)
 ==================
 
