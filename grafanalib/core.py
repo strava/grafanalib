@@ -2035,6 +2035,7 @@ class Panel(object):
         return res
 
 
+<<<<<<< HEAD
 @attr.s
 class ePict(Panel):
     """
@@ -2045,6 +2046,24 @@ class ePict(Panel):
     :param bgURL: Where to load the image from.
     :param boxes: The info boxes to be placed on the image.
     """
+=======
+        Returns a new ``Graph`` that is the same as this one, except all of
+        the metrics have their ``refId`` property set. Any panels which had
+        an ``refId`` property set will keep that property, all others will
+        have auto-generated IDs provided for them.
+        """
+        ref_ids = set(
+            [target.refId for target in self._iter_targets() if target.refId])
+        candidate_ref_ids = itertools.chain(
+            string.ascii_uppercase,
+            itertools.product(string.ascii_uppercase, repeat=2)
+        )
+        auto_ref_ids = (i for i in candidate_ref_ids if i not in ref_ids)
+
+        def set_refid(target):
+            return target if target.refId else attr.assoc(target, refId=next(auto_ref_ids))  # noqa: E501
+        return self._map_targets(set_refid)
+>>>>>>> 014b0c9 (whitespace and flake8 updates to make the lint target pass)
 
     bgURL = attr.ib(default='', validator=instance_of(str))
 
@@ -2542,6 +2561,7 @@ class RangeMap(object):
             'text': self.text,
         }
 
+
 @attr.s
 class AjaxPanel(object):
     """Generates the Ajax Plugin Panel."""
@@ -2569,28 +2589,29 @@ class AjaxPanel(object):
 
     def to_json_data(self):
         return {
-           'method': self.method,
-           'params_js': self.params_js,
-           'title': self.title,
-           'url': self.url,
-           'datasource': self.datasource,
-           'header_js': self.header_js,
-           'id': self.id,
-           'minSpan': self.minSpan,
-           'mode': self.mode,
-           'responseType': self.responseType,
-           'skipSameURL': self.skipSameURL,
-           'showTime': self.showTime,
-           'showTimeFormat': self.showTimeFormat,
-           'showTimePrefix': self.showTimePrefix,
-           'showTimeValue': self.showTimeValue,
-           'span': self.span,
-           'targets': self.targets,
-           'templateResponse': self.templateResponse,
-           'transparent': self.transparent,
-           'type': self.type,
-           'withCredentials': self.withCredentials
+            'method': self.method,
+            'params_js': self.params_js,
+            'title': self.title,
+            'url': self.url,
+            'datasource': self.datasource,
+            'header_js': self.header_js,
+            'id': self.id,
+            'minSpan': self.minSpan,
+            'mode': self.mode,
+            'responseType': self.responseType,
+            'skipSameURL': self.skipSameURL,
+            'showTime': self.showTime,
+            'showTimeFormat': self.showTimeFormat,
+            'showTimePrefix': self.showTimePrefix,
+            'showTimeValue': self.showTimeValue,
+            'span': self.span,
+            'targets': self.targets,
+            'templateResponse': self.templateResponse,
+            'transparent': self.transparent,
+            'type': self.type,
+            'withCredentials': self.withCredentials
         }
+
 
 @attr.s
 class DiscreteColorMappingItem(object):
@@ -4645,8 +4666,9 @@ class BarChart(Panel):
 @attr.s
 class Annotation(object):
     """
-    Annotation creates a new dashboard annotation.  Annotations can be defined to query a
-    datasource and overlay information related to key events, such as container exits or deploys.
+    Annotation creates a new dashboard annotation. Annotations can be defined
+    to query a datasource and overlay information related to key events, such
+    as container exits or deploys.
 
         :param default: the default value for the variable
         :param datasource: where to fetch the values for the variable from
@@ -4668,7 +4690,7 @@ class Annotation(object):
             interval, datasource, custom, constant, adhoc.
         :param hide: Hide this variable in the dashboard, can be one of:
             SHOW (default), HIDE_LABEL, HIDE_VARIABLE
-    """
+    """  # noqa: E501
     name = attr.ib()
     expr = attr.ib(default=None)
     target = attr.ib(default=None)

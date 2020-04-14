@@ -182,7 +182,9 @@ def test_auto_refids():
 
 
 def test_auto_refids():
-    """auto_ref_ids() provides refIds for all targets without refIds already set."""
+    """
+    auto_ref_ids() provides refIds for all targets without refIds already set.
+    """
     dashboard = G.Dashboard(
         title="Test dashboard",
         rows=[
