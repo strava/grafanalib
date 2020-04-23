@@ -982,7 +982,7 @@ class Dashboard(object):
     refresh = attr.ib(default=DEFAULT_REFRESH)
     schemaVersion = attr.ib(default=SCHEMA_VERSION)
     sharedCrosshair = attr.ib(
-        default=False,
+        default=True,
         validator=instance_of(bool),
     )
     style = attr.ib(default=DARK_STYLE)
