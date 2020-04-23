@@ -306,7 +306,15 @@ Changes
 0.5.10 (2020-04-14)
 ===================
 
+0.6.1 (2020-04-23)
+==================
 * Set default refresh to 1m instead of 10s to reduce load on metric sources.
+* Set sharedCrosshair to default=true.
+
+
+0.6.0
+===================
+* Fix tests
 
 0.5.9 (2019-05-21)
 ==================

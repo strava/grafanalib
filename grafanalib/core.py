@@ -1519,10 +1519,54 @@ class AlertGroup(object):
     :param folder: Folder to hold alert (Grafana 9.x)
     :param evaluateInterval: Interval at which the group of alerts is to be evaluated
     """
+    """
+    # This is from upstream
     name = attr.ib()
     rules = attr.ib(default=attr.Factory(list), validator=instance_of(list))
     folder = attr.ib(default='alert', validator=instance_of(str))
     evaluateInterval = attr.ib(default='1m', validator=instance_of(str))
+    """
+    title = attr.ib()
+    rows = attr.ib()
+    annotations = attr.ib(
+        default=attr.Factory(Annotations),
+        validator=instance_of(Annotations),
+    )
+    editable = attr.ib(
+        default=True,
+        validator=instance_of(bool),
+    )
+    gnetId = attr.ib(default=None)
+    hideControls = attr.ib(
+        default=False,
+        validator=instance_of(bool),
+    )
+    id = attr.ib(default=None)
+    inputs = attr.ib(default=attr.Factory(list))
+    links = attr.ib(default=attr.Factory(list))
+    refresh = attr.ib(default=DEFAULT_REFRESH)
+    schemaVersion = attr.ib(default=SCHEMA_VERSION)
+    sharedCrosshair = attr.ib(
+        default=True,
+        validator=instance_of(bool),
+    )
+    style = attr.ib(default=DARK_STYLE)
+    tags = attr.ib(default=attr.Factory(list))
+    templating = attr.ib(
+        default=attr.Factory(Templating),
+        validator=instance_of(Templating),
+    )
+    time = attr.ib(
+        default=attr.Factory(lambda: DEFAULT_TIME),
+        validator=instance_of(Time),
+    )
+    timePicker = attr.ib(
+        default=attr.Factory(lambda: DEFAULT_TIME_PICKER),
+        validator=instance_of(TimePicker),
+    )
+    timezone = attr.ib(default=UTC)
+    version = attr.ib(default=0)
+    uid = attr.ib(default=None)
 
     def group_rules(self, rules):
         grouped_rules = []
