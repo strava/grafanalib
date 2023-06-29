@@ -181,49 +181,10 @@ def test_auto_refids():
     assert dashboard.rows[0].panels[0].targets[52].refId == 'BA'
 
 
-def test_auto_refids():
-    """
-    auto_ref_ids() provides refIds for all targets without refIds already set.
-    """
-    dashboard = G.Dashboard(
-        title="Test dashboard",
-        rows=[
-            G.Row(panels=[
-                G.Graph(
-                    title="CPU Usage by Namespace (rate[5m])",
-                    dataSource="My data source",
-                    targets=[
-                        G.Target(
-                            expr='whatever #Q',
-                            legendFormat='{{namespace}}',
-                        ),
-                        G.Target(
-                            expr='hidden whatever',
-                            legendFormat='{{namespace}}',
-                            refId='Q',
-                            hide=True
-                        ),
-                        G.Target(
-                            expr='another target'
-                        ),
-                    ],
-                    yAxes=[
-                        G.YAxis(format=G.SHORT_FORMAT, label="CPU seconds"),
-                        G.YAxis(format=G.SHORT_FORMAT),
-                    ],
-                ).auto_ref_ids()
-            ]),
-        ],
-    )
-    assert dashboard.rows[0].panels[0].targets[0].refId == 'A'
-    assert dashboard.rows[0].panels[0].targets[1].refId == 'Q'
-    assert dashboard.rows[0].panels[0].targets[2].refId == 'B'
-
-
 def test_row_show_title():
     row = G.Row().to_json_data()
-    assert row['title'] == 'New row'
-    assert not row['showTitle']
+    assert row['title'] == ''
+    assert row['showTitle']
 
     row = G.Row(title='My title').to_json_data()
     assert row['title'] == 'My title'

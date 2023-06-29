@@ -8,7 +8,6 @@ arbitrary Grafana JSON.
 
 import itertools
 import math
-from numbers import Number
 import string
 import warnings
 from numbers import Number
@@ -601,7 +600,6 @@ class Target(object):
             'step': self.step,
             'instant': self.instant,
             'datasource': self.datasource,
-            'hide': self.hide,
         }
 
 
@@ -638,39 +636,6 @@ class SqlTarget(Target):
         super_json["rawSql"] = self.rawSql
         super_json["rawQuery"] = self.rawQuery
         return super_json
-
-class CloudWatchTarget(object):
-    region = attr.ib(default="")
-    namespace = attr.ib(default="")
-    metricName = attr.ib(default="")
-    statistics = attr.ib(default=attr.Factory(list))
-    dimensions = attr.ib(default=attr.Factory(dict))
-    id = attr.ib(default="")
-    expression = attr.ib(default="")
-    period = attr.ib(default="")
-    alias = attr.ib(default="")
-    highResolution = attr.ib(default=False, validator=instance_of(bool))
-
-    refId = attr.ib(default="")
-    datasource = attr.ib(default="")
-    hide = attr.ib(default=False, validator=instance_of(bool))
-
-    def to_json_data(self):
-        return {
-            'region': self.region,
-            'namespace': self.namespace,
-            'metricName': self.metricName,
-            'statistics': self.statistics,
-            'dimensions': self.dimensions,
-            'id': self.id,
-            'expression': self.expression,
-            'period': self.period,
-            'alias': self.alias,
-            'highResolution': self.highResolution,
-            'refId': self.refId,
-            'datasource': self.datasource,
-            'hide': self.hide,
-        }
 
 
 @attr.s
@@ -835,41 +800,6 @@ class GridPos(object):
     :param x: x cordinate of the panel, in same unit as w
     :param y: y cordinate of the panel, in same unit as h
     """
-
-    h = attr.ib()
-    w = attr.ib()
-    x = attr.ib()
-    y = attr.ib()
-
-    def to_json_data(self):
-        return {
-            'h': self.h,
-            'w': self.w,
-            'x': self.x,
-            'y': self.y
-        }
-
-@attr.s
-class Row(object):
-    # TODO: jml would like to separate the balancing behaviour from this
-    # layer.
-    panels = attr.ib(default=attr.Factory(list), converter=_balance_panels)
-    collapse = attr.ib(
-        default=False, validator=instance_of(bool),
-    )
-    editable = attr.ib(
-        default=True, validator=instance_of(bool),
-    )
-    height = attr.ib(
-        default=attr.Factory(lambda: DEFAULT_ROW_HEIGHT),
-        validator=instance_of(Pixels),
-    )
-    showTitle = attr.ib(default=None)
-    title = attr.ib(default=None)
-    repeat = attr.ib(default=None)
-
-    def _iter_panels(self):
-        return iter(self.panels)
 
     h = attr.ib()
     w = attr.ib()
@@ -1084,32 +1014,6 @@ class Template(object):
                 'value': self.default,
                 'tags': [],
             }
-
-    def __attrs_post_init__(self):
-        if self.type == 'custom':
-            if len(self.options) == 0:
-                for value in self.query.split(','):
-                    is_default = value == self.default
-                    option = {
-                        "selected": is_default,
-                        "text": value,
-                        "value": value,
-                    }
-                    if is_default:
-                        self._current = option
-                    self.options.append(option)
-            else:
-                for option in self.options:
-                    if option['selected']:
-                        self._current = option
-                        break
-        else:
-            self._current = {
-                'text': self.default,
-                'value': self.default,
-                'tags': [],
-            }
-
 
     def to_json_data(self):
         return {
@@ -1513,60 +1417,15 @@ class Alert(object):
 class AlertGroup(object):
     """
     Create an alert group of Grafana 8.x alerts
-
     :param name: Alert group name
     :param rules: List of AlertRule
     :param folder: Folder to hold alert (Grafana 9.x)
     :param evaluateInterval: Interval at which the group of alerts is to be evaluated
     """
-    """
-    # This is from upstream
     name = attr.ib()
     rules = attr.ib(default=attr.Factory(list), validator=instance_of(list))
     folder = attr.ib(default='alert', validator=instance_of(str))
     evaluateInterval = attr.ib(default='1m', validator=instance_of(str))
-    """
-    title = attr.ib()
-    rows = attr.ib()
-    annotations = attr.ib(
-        default=attr.Factory(Annotations),
-        validator=instance_of(Annotations),
-    )
-    editable = attr.ib(
-        default=True,
-        validator=instance_of(bool),
-    )
-    gnetId = attr.ib(default=None)
-    hideControls = attr.ib(
-        default=False,
-        validator=instance_of(bool),
-    )
-    id = attr.ib(default=None)
-    inputs = attr.ib(default=attr.Factory(list))
-    links = attr.ib(default=attr.Factory(list))
-    refresh = attr.ib(default=DEFAULT_REFRESH)
-    schemaVersion = attr.ib(default=SCHEMA_VERSION)
-    sharedCrosshair = attr.ib(
-        default=True,
-        validator=instance_of(bool),
-    )
-    style = attr.ib(default=DARK_STYLE)
-    tags = attr.ib(default=attr.Factory(list))
-    templating = attr.ib(
-        default=attr.Factory(Templating),
-        validator=instance_of(Templating),
-    )
-    time = attr.ib(
-        default=attr.Factory(lambda: DEFAULT_TIME),
-        validator=instance_of(Time),
-    )
-    timePicker = attr.ib(
-        default=attr.Factory(lambda: DEFAULT_TIME_PICKER),
-        validator=instance_of(TimePicker),
-    )
-    timezone = attr.ib(default=UTC)
-    version = attr.ib(default=0)
-    uid = attr.ib(default=None)
 
     def group_rules(self, rules):
         grouped_rules = []
@@ -1869,7 +1728,7 @@ class Dashboard(object):
     rows = attr.ib(default=attr.Factory(list), validator=instance_of(list))
     schemaVersion = attr.ib(default=SCHEMA_VERSION)
     sharedCrosshair = attr.ib(
-        default=False,
+        default=True,
         validator=instance_of(bool),
     )
     style = attr.ib(default=DARK_STYLE)
@@ -2079,35 +1938,15 @@ class Panel(object):
         return res
 
 
-<<<<<<< HEAD
 @attr.s
 class ePict(Panel):
     """
     Generates ePict panel json structure.
     https://grafana.com/grafana/plugins/larona-epict-panel/
-
     :param autoScale: Whether to auto scale image to panel size.
     :param bgURL: Where to load the image from.
     :param boxes: The info boxes to be placed on the image.
     """
-=======
-        Returns a new ``Graph`` that is the same as this one, except all of
-        the metrics have their ``refId`` property set. Any panels which had
-        an ``refId`` property set will keep that property, all others will
-        have auto-generated IDs provided for them.
-        """
-        ref_ids = set(
-            [target.refId for target in self._iter_targets() if target.refId])
-        candidate_ref_ids = itertools.chain(
-            string.ascii_uppercase,
-            itertools.product(string.ascii_uppercase, repeat=2)
-        )
-        auto_ref_ids = (i for i in candidate_ref_ids if i not in ref_ids)
-
-        def set_refid(target):
-            return target if target.refId else attr.assoc(target, refId=next(auto_ref_ids))  # noqa: E501
-        return self._map_targets(set_refid)
->>>>>>> 014b0c9 (whitespace and flake8 updates to make the lint target pass)
 
     bgURL = attr.ib(default='', validator=instance_of(str))
 
@@ -2184,7 +2023,7 @@ class Row(object):
         validator=instance_of(Pixels),
     )
     showTitle = attr.ib(default=None)
-    title = attr.ib(default=None)
+    title = attr.ib(default="")
     repeat = attr.ib(default=None)
 
     def _iter_panels(self):
@@ -2348,29 +2187,6 @@ class Graph(Panel):
         def set_refid(t):
             return t if t.refId else attr.evolve(t, refId=next(auto_ref_ids))
 
-        return self._map_targets(set_refid)
-
-    def _iter_targets(self):
-        for target in self.targets:
-            yield target
-
-    def _map_targets(self, f):
-        return attr.assoc(self, targets=[f(t) for t in self.targets])
-
-    def auto_ref_ids(self):
-        """Give unique IDs all the panels without IDs.
-
-        Returns a new ``Graph`` that is the same as this one, except all
-        of the metrics have their ``refId`` property set. Any panels which had an
-        ``refId`` property set will keep that property, all others will have
-        auto-generated IDs provided for them.
-        """
-        ref_ids = set([target.refId for target in self._iter_targets() if target.refId])
-        candidate_ref_ids = itertools.chain(string.ascii_uppercase, itertools.product(string.ascii_uppercase, repeat=2))
-        auto_ref_ids = (i for i in candidate_ref_ids if i not in ref_ids)
-
-        def set_refid(target):
-            return target if target.refId else attr.assoc(target, refId=next(auto_ref_ids))
         return self._map_targets(set_refid)
 
 
@@ -3422,70 +3238,142 @@ class Column(object):
         }
 
 
+def _style_columns(columns):
+    """Generate a list of column styles given some styled columns.
+
+    The 'Table' object in Grafana separates column definitions from column
+    style definitions. However, when defining dashboards it can be very useful
+    to define the style next to the column. This function helps that happen.
+
+    :param columns: A list of (Column, ColumnStyle) pairs. The associated
+        ColumnStyles must not have a 'pattern' specified. You can also provide
+       'None' if you want to use the default styles.
+    :return: A list of ColumnStyle values that can be used in a Grafana
+        definition.
+    """
+    new_columns = []
+    styles = []
+    for column, style in columns:
+        new_columns.append(column)
+        if not style:
+            continue
+        if style.pattern and style.pattern != column.text:
+            raise ValueError(
+                "ColumnStyle pattern (%r) must match the column name (%r) if "
+                "specified" % (style.pattern, column.text))
+        styles.append(attr.evolve(style, pattern=column.text))
+    return new_columns, styles
+
+
 @attr.s
-class Table(Panel):
+class Table(object):
     """Generates Table panel json structure
 
-    Now supports Grafana v8+
-    Grafana doc on table: https://grafana.com/docs/grafana/latest/visualizations/table/
+    Grafana doc on table: http://docs.grafana.org/reference/table_panel/
 
-    :param align: Align cell contents; auto (default), left, center, right
-    :param colorMode: Default thresholds
-    :param columns: Table columns for Aggregations view
-    :param displayMode: By default, Grafana automatically chooses display settings, you can choose;
-        color-text, color-background, color-background-solid, gradient-gauge, lcd-gauge, basic, json-view
-    :param fontSize: Defines value font size
-    :param filterable: Allow user to filter columns, default False
-    :param mappings: To assign colors to boolean or string values, use Value mappings
-    :param overrides: To override the base characteristics of certain data
-    :param showHeader: Show the table header
+    :param columns: table columns for Aggregations view
+    :param dataSource: Grafana datasource name
+    :param description: optional panel description
+    :param editable: defines if panel is editable via web interfaces
+    :param fontSize: defines value font size
+    :param height: defines panel height
+    :param hideTimeOverride: hides time overrides
+    :param id: panel id
+    :param links: additional web links
+    :param minSpan: minimum span number
+    :param pageSize: rows per page (None is unlimited)
+    :param scroll: scroll the table instead of displaying in full
+    :param showHeader: show the table header
+    :param span: defines the number of spans that will be used for panel
+    :param styles: defines formatting for each column
+    :param targets: list of metric requests for chosen datasource
+    :param timeFrom: time range that Override relative time
+    :param title: panel title
+    :param transform: table style
+    :param transparent: defines if panel should be transparent
     """
 
-    align = attr.ib(default='auto', validator=instance_of(str))
-    colorMode = attr.ib(default='thresholds', validator=instance_of(str))
+    dataSource = attr.ib()
+    targets = attr.ib()
+    title = attr.ib()
     columns = attr.ib(default=attr.Factory(list))
-    displayMode = attr.ib(default='auto', validator=instance_of(str))
-    fontSize = attr.ib(default='100%')
-    filterable = attr.ib(default=False, validator=instance_of(bool))
-    mappings = attr.ib(default=attr.Factory(list))
-    overrides = attr.ib(default=attr.Factory(list))
+    description = attr.ib(default=None)
+    editable = attr.ib(default=True, validator=instance_of(bool))
+    fontSize = attr.ib(default="100%")
+    height = attr.ib(default=None)
+    hideTimeOverride = attr.ib(default=False, validator=instance_of(bool))
+    id = attr.ib(default=None)
+    links = attr.ib(default=attr.Factory(list))
+    minSpan = attr.ib(default=None)
+    pageSize = attr.ib(default=None)
+    repeat = attr.ib(default=None)
+    scroll = attr.ib(default=True, validator=instance_of(bool))
     showHeader = attr.ib(default=True, validator=instance_of(bool))
     span = attr.ib(default=6)
+    sort = attr.ib(
+        default=attr.Factory(ColumnSort), validator=instance_of(ColumnSort))
+    styles = attr.ib()
+    timeFrom = attr.ib(default=None)
+
+    transform = attr.ib(default=COLUMNS_TRANSFORM)
+    transparent = attr.ib(default=False, validator=instance_of(bool))
+
+    @styles.default
+    def styles_default(self):
+        return [
+            ColumnStyle(
+                alias="Time",
+                pattern="time",
+                type=DateColumnStyleType(),
+            ),
+            ColumnStyle(
+                pattern="/.*/",
+            ),
+        ]
 
     @classmethod
     def with_styled_columns(cls, columns, styles=None, **kwargs):
-        """Styled columns is not support in Grafana v8 Table"""
-        print("Error: Styled columns is not support in Grafana v8 Table")
-        print("Please see https://grafana.com/docs/grafana/latest/visualizations/table/ for more options")
-        raise NotImplementedError
+        """Construct a table where each column has an associated style.
+
+        :param columns: A list of (Column, ColumnStyle) pairs, where the
+            ColumnStyle is the style for the column and does **not** have a
+            pattern set (or the pattern is set to exactly the column name).
+            The ColumnStyle may also be None.
+        :param styles: An optional list of extra column styles that will be
+            appended to the table's list of styles.
+        :param **kwargs: Other parameters to the Table constructor.
+        :return: A Table.
+        """
+        extraStyles = styles if styles else []
+        columns, styles = _style_columns(columns)
+        return cls(columns=columns, styles=styles + extraStyles, **kwargs)
 
     def to_json_data(self):
-        return self.panel_json(
-            {
-                "color": {
-                    "mode": self.colorMode
-                },
-                'columns': self.columns,
-                'fontSize': self.fontSize,
-                'fieldConfig': {
-                    'defaults': {
-                        'custom': {
-                            'align': self.align,
-                            'displayMode': self.displayMode,
-                            'filterable': self.filterable
-                        },
-                    },
-                    'overrides': self.overrides
-                },
-                'hideTimeOverride': self.hideTimeOverride,
-                'mappings': self.mappings,
-                'minSpan': self.minSpan,
-                'options': {
-                    'showHeader': self.showHeader
-                },
-                'type': TABLE_TYPE,
-            }
-        )
+        return {
+            'columns': self.columns,
+            'datasource': self.dataSource,
+            'description': self.description,
+            'editable': self.editable,
+            'fontSize': self.fontSize,
+            'height': self.height,
+            'hideTimeOverride': self.hideTimeOverride,
+            'id': self.id,
+            'links': self.links,
+            'minSpan': self.minSpan,
+            'pageSize': self.pageSize,
+            'repeat': self.repeat,
+            'scroll': self.scroll,
+            'showHeader': self.showHeader,
+            'span': self.span,
+            'sort': self.sort,
+            'styles': self.styles,
+            'targets': self.targets,
+            'timeFrom': self.timeFrom,
+            'title': self.title,
+            'transform': self.transform,
+            'transparent': self.transparent,
+            'type': TABLE_TYPE,
+        }
 
 
 @attr.s

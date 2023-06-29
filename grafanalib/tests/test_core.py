@@ -1,7 +1,6 @@
 """Tests for core."""
 
 import random
-
 import grafanalib.core as G
 import pytest
 
@@ -88,20 +87,6 @@ def test_custom_template_dont_override_options():
                 "selected": False,
                 "text": 'some text 3',
             },
-        ],
-        type='custom',
-    )
-
-    assert len(t.to_json_data()['options']) == 3
-    assert t.to_json_data()['current']['text'] == 'some text 1'
-    assert t.to_json_data()['current']['value'] == '1'
-
-
-def test_table_styled_columns():
-    t = G.Table.with_styled_columns(
-        columns=[
-            (G.Column('Foo', 'foo'), G.ColumnStyle()),
-            (G.Column('Bar', 'bar'), None),
         ],
         type='custom',
     )
@@ -1205,62 +1190,3 @@ def test_sql_target_with_source_files():
     assert t.to_json_data()["targets"][0].rawQuery is True
     assert t.to_json_data()["targets"][0].rawSql == "SELECT example\nFROM test\nWHERE example='example' AND example_date BETWEEN '1970-01-01' AND '1971-01-01';\n"
     print(t.to_json_data()["targets"][0])
-
-
-CW_TESTDATA = [
-    pytest.param(
-        {},
-        {'region': '',
-         'namespace': '',
-         'metricName': '',
-         'statistics': [],
-         'dimensions': {},
-         'id': '',
-         'expression': '',
-         'period': '',
-         'alias': '',
-         'highResolution': False,
-         'refId': '',
-         'datasource': '',
-         'hide': False},
-        id='defaults',
-    ),
-    pytest.param(
-        {
-            'region': 'us-east-1',
-            'namespace': 'AWS/RDS',
-            'metricName': 'CPUUtilization',
-            'statistics': ['Average'],
-            'dimensions': {'DBInstanceIdentifier': 'foo'},
-            'id': 'id',
-            'expression': 'expr',
-            'period': 'period',
-            'alias': 'alias',
-            'highResolution': True,
-            'refId': 'A',
-            'datasource': 'CloudWatch',
-            'hide': True,
-        },
-        {
-            'region': 'us-east-1',
-            'namespace': 'AWS/RDS',
-            'metricName': 'CPUUtilization',
-            'statistics': ['Average'],
-            'dimensions': {'DBInstanceIdentifier': 'foo'},
-            'id': 'id',
-            'expression': 'expr',
-            'period': 'period',
-            'alias': 'alias',
-            'highResolution': True,
-            'refId': 'A',
-            'datasource': 'CloudWatch',
-            'hide': True,
-        },
-        id='custom',
-    )
-]
-
-
-@pytest.mark.parametrize("attrs,expected", CW_TESTDATA)
-def test_cloud_watch_target_json_data(attrs, expected):
-    assert G.CloudWatchTarget(**attrs).to_json_data() == expected
