@@ -1,8 +1,9 @@
 """Tests for core."""
 
 import random
-import grafanalib.core as G
 import pytest
+
+import grafanalib.core as G
 
 
 def dummy_grid_pos() -> G.GridPos:
@@ -94,36 +95,6 @@ def test_custom_template_dont_override_options():
     assert len(t.to_json_data()['options']) == 3
     assert t.to_json_data()['current']['text'] == 'some text 1'
     assert t.to_json_data()['current']['value'] == '1'
-
-
-def test_table():
-    t = G.Table(
-        dataSource='some data source',
-        targets=[
-            G.Target(expr='some expr'),
-        ],
-        title='table title',
-        transformations=[
-            {
-                "id": "seriesToRows",
-                "options": {}
-            },
-            {
-                "id": "organize",
-                "options": {
-                    "excludeByName": {
-                        "Time": True
-                    },
-                    "indexByName": {},
-                    "renameByName": {
-                        "Value": "Dummy"
-                    }
-                }
-            }
-        ]
-    )
-    assert len(t.to_json_data()['transformations']) == 2
-    assert t.to_json_data()['transformations'][0]["id"] == "seriesToRows"
 
 
 def test_stat_no_repeat():

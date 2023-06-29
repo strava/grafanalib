@@ -2,6 +2,7 @@
 Changelog
 =========
 
+<<<<<<< HEAD
 0.x.x (?)
 ==================
 
@@ -306,6 +307,8 @@ Changes
 0.5.10 (2020-04-14)
 ===================
 
+=======
+>>>>>>> main
 0.6.1 (2020-04-23)
 ==================
 * Set default refresh to 1m instead of 10s to reduce load on metric sources.
