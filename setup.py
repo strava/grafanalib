@@ -14,11 +14,15 @@ setup(
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
-    # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.6.1',
+    # https://packaging.python.org/en/latest/guides/single-sourcing-package-version/
+    version='0.7.0',
     description='Library for building Grafana dashboards',
     long_description=open(README).read(),
     url='https://github.com/weaveworks/grafanalib',
+    project_urls={
+        "Documentation": "https://grafanalib.readthedocs.io",
+        "Source": "https://github.com/weaveworks/grafanalib",
+    },
     author='Weaveworks',
     author_email='help+grafanalib@weave.works',
     license='Apache',
@@ -29,8 +33,11 @@ setup(
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: Apache Software License',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'Topic :: System :: Monitoring',
     ],
     install_requires=[
@@ -46,6 +53,8 @@ setup(
         'console_scripts': [
             'generate-dashboard=grafanalib._gen:generate_dashboard_script',
             'generate-dashboards=grafanalib._gen:generate_dashboards_script',
+            'generate-alertgroup=grafanalib._gen:generate_alertgroup_script',
+            'generate-alertgroups=grafanalib._gen:generate_alertgroups_script'
         ],
     },
 )

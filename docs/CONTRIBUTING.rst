@@ -11,7 +11,7 @@ If something comes up during a code review or on a ticket that you think should 
 Code of conduct
 ===============
 
-We have a `code of conduct`_, and we enforce it. Please take a look!
+We have a :doc:`code of conduct <../CODE_OF_CONDUCT>`, and we enforce it. Please take a look!
 
 Coding guidelines
 =================
@@ -33,6 +33,9 @@ Conventions
 * Local variables are ``snake_cased``
 * We're kind of fussy about indentation:
   4 spaces everywhere, follow the examples in `core.py`_ if you're uncertain
+* Triple Double quotes `"""` for docstrings
+* Double quotes "" for human readable message or when string used for interpolation
+* Single quotes '' for symbol like strings
 
 Testing
 -------
@@ -41,6 +44,10 @@ Lots of grafanalib is just simple data structures, so we aren't fastidious about
 
 However, tests are strongly encouraged for anything with non-trivial logic.
 Please try to use `hypothesis`_ for your tests.
+
+.. code-block:: console
+
+  $ make all
 
 Gotchas
 -------
@@ -55,7 +62,7 @@ Submitting a PR
 
 * We are very grateful for all PRs, and deeply appreciate the work and effort involved!
 * We try to review PRs as quickly as possible, but it might take a couple of weeks to get around to reviewing your PR—sorry, we know that sucks
-* Please add an entry to the `CHANGELOG`_ in your PR
+* Please add an entry to the :doc:`CHANGELOG <../CHANGELOG>` in your PR
 * It helps a lot if the PR description provides some context on what you are trying to do and why you think it's a good idea
 * The smaller the PR, the more quickly we'll be able to review it
 
@@ -71,5 +78,4 @@ Filing a bug
 .. _`CHANGELOG`: ../CHANGELOG.rst
 .. _`attr.Factory`: http://www.attrs.org/en/stable/api.html#attr.Factory
 .. _`hypothesis`: http://hypothesis.works/
-.. _`core.py`: ../grafanalib/core.py
-.. _`code of conduct`: ./CODE_OF_CONDUCT.rst
+.. _`core.py`: https://github.com/weaveworks/grafanalib/blob/main/grafanalib/core.py

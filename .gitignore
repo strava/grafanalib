@@ -5,8 +5,14 @@ build/
 dist/
 .uptodate
 /.env
-/junit-*.xml
+test-results/junit-*.xml
 /.cache
 .ensure-*
 /.tox
 /.coverage
+/venv*/
+/.idea/
+/.vscode/
+
+# Documentation
+docs/build
