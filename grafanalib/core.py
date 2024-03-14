@@ -1910,7 +1910,8 @@ class Panel(object):
     id = attr.ib(default=None)
     interval = attr.ib(default=None)
     links = attr.ib(default=attr.Factory(list))
-    maxDataPoints = attr.ib(default=100)
+    # Use a larger maxDataPoints to get better graphs
+    maxDataPoints = attr.ib(default=1000)
     minSpan = attr.ib(default=None)
     repeat = attr.ib(default=attr.Factory(Repeat), validator=instance_of(Repeat))
     span = attr.ib(default=None)
