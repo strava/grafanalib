@@ -1,4 +1,3 @@
-
 """Low-level functions for building Grafana dashboards.
 
 The functions in this module don't enforce Weaveworks policy, and only mildly
@@ -3278,6 +3277,18 @@ class Column(object):
         }
 
 
+@attr.s
+class TableSortByField(object):
+    displayName = attr.ib(default="")
+    desc = attr.ib(default=False)
+
+    def to_json_data(self):
+        return {
+            "displayName": self.displayName,
+            "desc": self.desc,
+        }
+
+
 def _style_columns(columns):
     """Generate a list of column styles given some styled columns.
 
@@ -3306,114 +3317,78 @@ def _style_columns(columns):
 
 
 @attr.s
-class Table(object):
+class Table(Panel):
     """Generates Table panel json structure
 
-    Grafana doc on table: http://docs.grafana.org/reference/table_panel/
+    Now supports Grafana v8+
+    Grafana doc on table: https://grafana.com/docs/grafana/latest/visualizations/table/
 
-    :param columns: table columns for Aggregations view
-    :param dataSource: Grafana datasource name
-    :param description: optional panel description
-    :param editable: defines if panel is editable via web interfaces
-    :param fontSize: defines value font size
-    :param height: defines panel height
-    :param hideTimeOverride: hides time overrides
-    :param id: panel id
-    :param links: additional web links
-    :param minSpan: minimum span number
-    :param pageSize: rows per page (None is unlimited)
-    :param scroll: scroll the table instead of displaying in full
-    :param showHeader: show the table header
-    :param span: defines the number of spans that will be used for panel
-    :param styles: defines formatting for each column
-    :param targets: list of metric requests for chosen datasource
-    :param timeFrom: time range that Override relative time
-    :param title: panel title
-    :param transform: table style
-    :param transparent: defines if panel should be transparent
+    :param align: Align cell contents; auto (default), left, center, right
+    :param colorMode: Default thresholds
+    :param columns: Table columns for Aggregations view
+    :param displayMode: By default, Grafana automatically chooses display settings, you can choose;
+        color-text, color-background, color-background-solid, gradient-gauge, lcd-gauge, basic, json-view
+    :param fontSize: Defines value font size
+    :param filterable: Allow user to filter columns, default False
+    :param mappings: To assign colors to boolean or string values, use Value mappings
+    :param overrides: To override the base characteristics of certain data
+    :param showHeader: Show the table header
+    :param unit: units
+    :param sortBy: Sort rows by table fields
     """
 
-    dataSource = attr.ib()
-    targets = attr.ib()
-    title = attr.ib()
+    align = attr.ib(default="auto", validator=instance_of(str))
+    colorMode = attr.ib(default="thresholds", validator=instance_of(str))
     columns = attr.ib(default=attr.Factory(list))
-    description = attr.ib(default=None)
-    editable = attr.ib(default=True, validator=instance_of(bool))
+    displayMode = attr.ib(default="auto", validator=instance_of(str))
     fontSize = attr.ib(default="100%")
-    height = attr.ib(default=None)
-    hideTimeOverride = attr.ib(default=False, validator=instance_of(bool))
-    id = attr.ib(default=None)
-    links = attr.ib(default=attr.Factory(list))
-    minSpan = attr.ib(default=None)
-    pageSize = attr.ib(default=None)
-    repeat = attr.ib(default=None)
-    scroll = attr.ib(default=True, validator=instance_of(bool))
+    filterable = attr.ib(default=False, validator=instance_of(bool))
+    mappings = attr.ib(default=attr.Factory(list))
+    overrides = attr.ib(default=attr.Factory(list))
     showHeader = attr.ib(default=True, validator=instance_of(bool))
-    span = attr.ib(default=6)
-    sort = attr.ib(
-        default=attr.Factory(ColumnSort), validator=instance_of(ColumnSort))
-    styles = attr.ib()
-    timeFrom = attr.ib(default=None)
-
-    transform = attr.ib(default=COLUMNS_TRANSFORM)
-    transparent = attr.ib(default=False, validator=instance_of(bool))
-
-    @styles.default
-    def styles_default(self):
-        return [
-            ColumnStyle(
-                alias="Time",
-                pattern="time",
-                type=DateColumnStyleType(),
-            ),
-            ColumnStyle(
-                pattern="/.*/",
-            ),
-        ]
+    span = (attr.ib(default=6),)
+    unit = attr.ib(default="", validator=instance_of(str))
+    sortBy = attr.ib(
+        default=attr.Factory(list),
+        validator=attr.validators.deep_iterable(
+            member_validator=instance_of(TableSortByField),
+            iterable_validator=instance_of(list),
+        ),
+    )
 
     @classmethod
     def with_styled_columns(cls, columns, styles=None, **kwargs):
-        """Construct a table where each column has an associated style.
-
-        :param columns: A list of (Column, ColumnStyle) pairs, where the
-            ColumnStyle is the style for the column and does **not** have a
-            pattern set (or the pattern is set to exactly the column name).
-            The ColumnStyle may also be None.
-        :param styles: An optional list of extra column styles that will be
-            appended to the table's list of styles.
-        :param **kwargs: Other parameters to the Table constructor.
-        :return: A Table.
-        """
-        extraStyles = styles if styles else []
-        columns, styles = _style_columns(columns)
-        return cls(columns=columns, styles=styles + extraStyles, **kwargs)
+        """Styled columns is not support in Grafana v8 Table"""
+        print("Error: Styled columns is not support in Grafana v8 Table")
+        print(
+            "Please see https://grafana.com/docs/grafana/latest/visualizations/table/ for more options"
+        )
+        raise NotImplementedError
 
     def to_json_data(self):
-        return {
-            'columns': self.columns,
-            'datasource': self.dataSource,
-            'description': self.description,
-            'editable': self.editable,
-            'fontSize': self.fontSize,
-            'height': self.height,
-            'hideTimeOverride': self.hideTimeOverride,
-            'id': self.id,
-            'links': self.links,
-            'minSpan': self.minSpan,
-            'pageSize': self.pageSize,
-            'repeat': self.repeat,
-            'scroll': self.scroll,
-            'showHeader': self.showHeader,
-            'span': self.span,
-            'sort': self.sort,
-            'styles': self.styles,
-            'targets': self.targets,
-            'timeFrom': self.timeFrom,
-            'title': self.title,
-            'transform': self.transform,
-            'transparent': self.transparent,
-            'type': TABLE_TYPE,
-        }
+        return self.panel_json(
+            {
+                "color": {"mode": self.colorMode},
+                "columns": self.columns,
+                "fontSize": self.fontSize,
+                "fieldConfig": {
+                    "defaults": {
+                        "custom": {
+                            "align": self.align,
+                            "displayMode": self.displayMode,
+                            "filterable": self.filterable,
+                        },
+                        "unit": self.unit,
+                    },
+                    "overrides": self.overrides,
+                },
+                "hideTimeOverride": self.hideTimeOverride,
+                "mappings": self.mappings,
+                "minSpan": self.minSpan,
+                "options": {"showHeader": self.showHeader, "sortBy": self.sortBy},
+                "type": TABLE_TYPE,
+            }
+        )
 
 
 @attr.s
