@@ -2,11 +2,27 @@
 Changelog
 =========
 
-<<<<<<< HEAD
 0.x.x (?)
-==================
 
-* Added ...
+* Add `QueryMode` parameter in CloudwatchMetricsTarget
+* Added support `alias` via the `legendFormat` option for `Target`
+* Added `neutral` option for `GaugePanel` (supported by Grafana 9.3.0 - https://github.com/grafana/grafana/discussions/38273)
+* Added support `alias` via the `legendFormat` option for `Target`
+* **Breaking change:** Fixed spelling errors for temperature units, corrected 'CELSUIS' to 'CELSIUS' and 'FARENHEIT' to 'FAHRENHEIT'.
+* Added ``tooltipSort`` parameter to PieChartv2 panel
+* Fix mappings for Table
+* Added support for AWS Cross-Account in CloudwatchMetricsTarget
+* Added `LokiTarget`
+
+0.7.1 2024-01-12
+================
+
+* Extended DashboardLink to support links to dashboards and urls, as per the docs_
+
+.. _`docs`: https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/manage-dashboard-links/#dashboard-links
+
+* Fix default options for Heatmap
+* Add Unit option for Graph panel
 * Added Minimum option for Timeseries
 * Added Maximum option for Timeseries
 * Added Number of decimals displays option for Timeseries
@@ -14,9 +30,18 @@ Changelog
 * Extended SqlTarget to support parsing queries from files
 * Fix AlertCondition backwards compatibility (``useNewAlerts`` default to ``False``)
 * Added RateMetricAgg_ for ElasticSearch
+* added axisSoftMin and axisSoftMax options for TimeSeries
+* Added support for Azure Data Explorer datasource plugin (https://github.com/grafana/azure-data-explorer-datasource)
+* Added ``sortBy`` parameter to Table panel
+* Added ``tooltipSort`` parameter to TimeSeries panel
+* Added unit parameter to the Table class in core
+* Added a hide parameter to ElasticsearchTarget
+* Fix value literal GAUGE_CALC_TOTAL to sum instead of total
+* Fix `BarGauge` orientation validation to accept `'auto'`
 
 .. _`Bar_Chart`: https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/bar-chart/
 .. _`RateMetricAgg`: https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-rate-aggregation.html
+
 
 0.7.0 (2022-10-02)
 ==================

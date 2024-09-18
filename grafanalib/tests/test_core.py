@@ -1123,6 +1123,32 @@ def test_target_invalid():
         )
 
 
+def test_loki_target():
+    t = G.Dashboard(
+        title='unittest',
+        uid='unit-test-uid',
+        timezone='browser',
+        panels=[
+            G.TimeSeries(
+                title='Some logs',
+                targets=[
+                    G.LokiTarget(
+                        datasource='my-logs',
+                        expr='{pod="unittest"} |= "hello"',
+                    ),
+                ],
+                gridPos=G.GridPos(h=10, w=24, x=0, y=0),
+            ),
+        ],
+    ).auto_panel_ids()
+
+    dashboard_json = t.to_json_data()
+    target_json = dashboard_json['panels'][0].targets[0].to_json_data()
+    # Grafana wants type/uid fields for Loki targets (as of 2024-04)
+    assert target_json['datasource']['type'] == 'loki'
+    assert target_json['datasource']['uid'] == 'my-logs'
+
+
 def test_sql_target():
     t = G.Table(
         dataSource="some data source",
@@ -1161,3 +1187,43 @@ def test_sql_target_with_source_files():
     assert t.to_json_data()["targets"][0].rawQuery is True
     assert t.to_json_data()["targets"][0].rawSql == "SELECT example\nFROM test\nWHERE example='example' AND example_date BETWEEN '1970-01-01' AND '1971-01-01';\n"
     print(t.to_json_data()["targets"][0])
+
+
+def test_default_heatmap():
+    h = G.Heatmap()
+
+    assert h.to_json_data()["options"] == []
+
+
+class TestDashboardLink():
+
+    def test_validators(self):
+        with pytest.raises(ValueError):
+            G.DashboardLink(
+                type='dashboard',
+            )
+        with pytest.raises(ValueError):
+            G.DashboardLink(
+                icon='not an icon'
+            )
+
+    def test_initialisation(self):
+        dl = G.DashboardLink().to_json_data()
+        assert dl['asDropdown'] is False
+        assert dl['icon'] == 'external link'
+        assert dl['includeVars'] is False
+        assert dl['keepTime'] is True
+        assert not dl['tags']
+        assert dl['targetBlank'] is False
+        assert dl['title'] == ""
+        assert dl['tooltip'] == ""
+        assert dl['type'] == 'dashboards'
+        assert dl['url'] == ""
+
+        url = 'https://grafana.com'
+        dl = G.DashboardLink(
+            uri=url,
+            type='link'
+        ).to_json_data()
+        assert dl['url'] == url
+        assert dl['type'] == 'link'
