@@ -1,8 +1,8 @@
 """Helpers to create Cloudwatch-specific Grafana queries."""
 
 import attr
-
 from attr.validators import instance_of
+
 from grafanalib.core import Target
 
 
@@ -22,6 +22,8 @@ class CloudwatchMetricsTarget(Target):
     :param expression: Cloudwatch Metric math expressions
     :param id: unique id
     :param matchExact: Only show metrics that exactly match all defined dimension names.
+    :param account: AWS Account where Cloudwatch is used
+    :param accountId: AWS Account ID where Cloudwatch is used
     :param metricName: Cloudwatch metric name
     :param namespace: Cloudwatch namespace
     :param period: Cloudwatch data period
@@ -31,12 +33,16 @@ class CloudwatchMetricsTarget(Target):
     :param statistic: Cloudwatch mathematic statistic
     :param hide: controls if given metric is displayed on visualization
     :param datasource: Grafana datasource name
+    :param queryMode: queryMode for cloudwatch metric request
     """
+
     alias = attr.ib(default="")
     dimensions = attr.ib(factory=dict, validator=instance_of(dict))
     expression = attr.ib(default="")
     id = attr.ib(default="")
     matchExact = attr.ib(default=True, validator=instance_of(bool))
+    account = attr.ib(default="")
+    accountId = attr.ib(default="")
     metricName = attr.ib(default="")
     namespace = attr.ib(default="")
     period = attr.ib(default="")
@@ -46,15 +52,17 @@ class CloudwatchMetricsTarget(Target):
     statistic = attr.ib(default="Average")
     hide = attr.ib(default=False, validator=instance_of(bool))
     datasource = attr.ib(default=None)
+    queryMode = attr.ib(default="")
 
     def to_json_data(self):
-
         return {
             "alias": self.alias,
             "dimensions": self.dimensions,
             "expression": self.expression,
             "id": self.id,
             "matchExact": self.matchExact,
+            "account": self.account,
+            "accountId": self.accountId,
             "metricName": self.metricName,
             "namespace": self.namespace,
             "period": self.period,
@@ -64,6 +72,7 @@ class CloudwatchMetricsTarget(Target):
             "statistic": self.statistic,
             "hide": self.hide,
             "datasource": self.datasource,
+            "queryMode": self.queryMode,
         }
 
 
@@ -88,6 +97,7 @@ class CloudwatchLogsInsightsTarget(Target):
     :param hide: controls if given metric is displayed on visualization
     :param datasource: Grafana datasource name
     """
+
     expression = attr.ib(default="")
     id = attr.ib(default="")
     logGroupNames = attr.ib(factory=list, validator=instance_of(list))
@@ -99,7 +109,6 @@ class CloudwatchLogsInsightsTarget(Target):
     datasource = attr.ib(default=None)
 
     def to_json_data(self):
-
         return {
             "expression": self.expression,
             "id": self.id,
