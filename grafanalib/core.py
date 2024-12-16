@@ -6,6 +6,7 @@ encourage it by way of some defaults. Rather, they are ways of building
 arbitrary Grafana JSON.
 """
 from __future__ import annotations
+
 import itertools
 import math
 import string
@@ -3410,47 +3411,31 @@ class TableSortByField(object):
 class Table(Panel):
     """Generates Table panel json structure
 
-    Grafana doc on table: http://docs.grafana.org/reference/table_panel/
+    Now supports Grafana v8+
+    Grafana doc on table: https://grafana.com/docs/grafana/latest/visualizations/table/
 
-    :param columns: table columns for Aggregations view
-    :param dataSource: Grafana datasource name
-    :param description: optional panel description
-    :param editable: defines if panel is editable via web interfaces
-    :param fontSize: defines value font size
-    :param height: defines panel height
-    :param hideTimeOverride: hides time overrides
-    :param id: panel id
-    :param links: additional web links
-    :param minSpan: minimum span number
-    :param pageSize: rows per page (None is unlimited)
-    :param scroll: scroll the table instead of displaying in full
-    :param showHeader: show the table header
-    :param span: defines the number of spans that will be used for panel
-    :param styles: defines formatting for each column
-    :param targets: list of metric requests for chosen datasource
-    :param timeFrom: time range that Override relative time
-    :param title: panel title
-    :param transform: table style
-    :param transparent: defines if panel should be transparent
+    :param align: Align cell contents; auto (default), left, center, right
+    :param colorMode: Default thresholds
+    :param columns: Table columns for Aggregations view
+    :param displayMode: By default, Grafana automatically chooses display settings, you can choose;
+        color-text, color-background, color-background-solid, gradient-gauge, lcd-gauge, basic, json-view
+    :param fontSize: Defines value font size
+    :param filterable: Allow user to filter columns, default False
+    :param mappings: To assign colors to boolean or string values, use Value mappings
+    :param overrides: To override the base characteristics of certain data
+    :param showHeader: Show the table header
     :param unit: units
     :param sortBy: Sort rows by table fields
     """
 
-    dataSource = attr.ib()
-    targets = attr.ib()
-    title = attr.ib()
+    align = attr.ib(default='auto', validator=instance_of(str))
+    colorMode = attr.ib(default='thresholds', validator=instance_of(str))
     columns = attr.ib(default=attr.Factory(list))
-    description = attr.ib(default=None)
-    editable = attr.ib(default=True, validator=instance_of(bool))
-    fontSize = attr.ib(default="100%")
-    height = attr.ib(default=None)
-    hideTimeOverride = attr.ib(default=False, validator=instance_of(bool))
-    id = attr.ib(default=None)
-    links = attr.ib(default=attr.Factory(list))
-    minSpan = attr.ib(default=None)
-    pageSize = attr.ib(default=None)
-    repeat = attr.ib(default=None)
-    scroll = attr.ib(default=True, validator=instance_of(bool))
+    displayMode = attr.ib(default='auto', validator=instance_of(str))
+    fontSize = attr.ib(default='100%')
+    filterable = attr.ib(default=False, validator=instance_of(bool))
+    mappings = attr.ib(default=attr.Factory(list))
+    overrides = attr.ib(default=attr.Factory(list))
     showHeader = attr.ib(default=True, validator=instance_of(bool))
     span = attr.ib(default=6),
     unit = attr.ib(default='', validator=instance_of(str))
@@ -3461,20 +3446,10 @@ class Table(Panel):
 
     @classmethod
     def with_styled_columns(cls, columns, styles=None, **kwargs):
-        """Construct a table where each column has an associated style.
-
-        :param columns: A list of (Column, ColumnStyle) pairs, where the
-            ColumnStyle is the style for the column and does **not** have a
-            pattern set (or the pattern is set to exactly the column name).
-            The ColumnStyle may also be None.
-        :param styles: An optional list of extra column styles that will be
-            appended to the table's list of styles.
-        :param **kwargs: Other parameters to the Table constructor.
-        :return: A Table.
-        """
-        extraStyles = styles if styles else []
-        columns, styles = _style_columns(columns)
-        return cls(columns=columns, styles=styles + extraStyles, **kwargs)
+        """Styled columns is not support in Grafana v8 Table"""
+        print("Error: Styled columns is not support in Grafana v8 Table")
+        print("Please see https://grafana.com/docs/grafana/latest/visualizations/table/ for more options")
+        raise NotImplementedError
 
     def to_json_data(self):
         return self.panel_json(
